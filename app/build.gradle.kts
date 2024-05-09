@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.parcelize)
 }
 
 android {
@@ -40,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
     packaging {
         resources {
@@ -50,6 +52,30 @@ android {
 }
 
 dependencies {
+
+//  Decompose + MVIKotlin
+    implementation(libs.decompose.decompose)
+    implementation(libs.decompose.extensions.compose)
+    implementation(libs.mvikotlin.mvikotlin)
+    implementation(libs.mvikotlin.mvikotlin.main)
+    implementation(libs.mvikotlin.mvikotlin.extensions.coroutines)
+
+//  Dagger2
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
+
+//  Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.logging.interceptor)
+
+//  Room
+    implementation(libs.room)
+    ksp(libs.room.compiler)
+
+//  Glide
+    ksp(libs.glide)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
