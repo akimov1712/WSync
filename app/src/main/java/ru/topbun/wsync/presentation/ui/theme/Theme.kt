@@ -1,4 +1,4 @@
-package ru.topbun.wsync.ui.theme
+package ru.topbun.wsync.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
