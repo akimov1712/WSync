@@ -5,7 +5,7 @@ import ru.topbun.wsync.domain.entity.City
 
 interface FavoriteRepository {
 
-    val favoriteCities: Flow<City>
+    val favoriteCities: Flow<List<City>>
 
     fun observeIsFavorite(id: Int): Flow<Boolean>
     suspend fun addToFavorite(city: City)
