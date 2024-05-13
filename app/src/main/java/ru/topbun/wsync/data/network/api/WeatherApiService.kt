@@ -8,7 +8,7 @@ import ru.topbun.wsync.data.network.dto.WeatherCurrentDto
 
 interface WeatherApiService {
 
-    @GET("search.json")
+    @GET("current.json")
     suspend fun loadCurrentWeather(
         @Query("q") query: String
     ): WeatherCurrentDto

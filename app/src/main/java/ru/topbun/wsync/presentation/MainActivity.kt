@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val api = ApiFactory.weatherApiService
         CoroutineScope(Dispatchers.IO).launch {
-            api.searchCity("Мо")
+//            api.searchCity("Москва")
             api.loadCurrentWeather("Северное")
         }
         setContent {
