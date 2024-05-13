@@ -8,19 +8,19 @@ import ru.topbun.wsync.data.network.dto.WeatherCurrentDto
 
 interface WeatherApiService {
 
-    @GET("search.json?key=75a0de1109a74a3aa54122337241205")
+    @GET("search.json")
     suspend fun loadCurrentWeather(
         @Query("q") query: String
     ): WeatherCurrentDto
 
 
-    @GET("forecast.json?key=75a0de1109a74a3aa54122337241205")
+    @GET("forecast.json")
     suspend fun loadForecast(
         @Query("q") query: String,
         @Query("days") days: Int
     ): ForecastDto
 
-    @GET("search.json?key=75a0de1109a74a3aa54122337241205")
+    @GET("search.json")
     suspend fun searchCity(
         @Query("q") query: String,
     ): List<CityDto>
