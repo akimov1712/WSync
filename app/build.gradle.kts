@@ -73,7 +73,8 @@ dependencies {
     implementation(libs.retrofit.logging.interceptor)
 
 //  Room
-    implementation(libs.room)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
     ksp(libs.room.compiler)
 
 //  Glide
