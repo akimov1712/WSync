@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.topbun.wsync.domain.entity.City
 import ru.topbun.wsync.domain.useCases.GetFavoriteCityUseCase
@@ -20,7 +19,7 @@ interface FavoriteStore : Store<Intent, State, Label> {
     sealed interface Intent {
 
         data object ClickToSearch: Intent
-        data object ClickToFavorite: Intent
+        data object ClickAddToFavorite: Intent
         data class ClickToCity(val city: City): Intent
 
     }

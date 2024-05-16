@@ -15,7 +15,7 @@ import ru.topbun.wsync.presentation.ui.screens.search.SearchStore.Label
 import ru.topbun.wsync.presentation.ui.screens.search.SearchStore.State
 import javax.inject.Inject
 
-internal interface SearchStore : Store<Intent, State, Label> {
+interface SearchStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
         data class ChangeSearchQuery(val query: String): Intent
@@ -47,7 +47,7 @@ internal interface SearchStore : Store<Intent, State, Label> {
     }
 }
 
-internal class SearchStoreFactory @Inject constructor(
+class SearchStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val searchCityUseCase: SearchCityUseCase,
     private val changeFavoriteCityUseCase: ChangeFavoriteCityUseCase
