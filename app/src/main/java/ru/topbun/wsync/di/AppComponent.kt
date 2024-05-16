@@ -4,6 +4,7 @@ import android.content.Context
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import dagger.BindsInstance
 import dagger.Component
+import ru.topbun.wsync.presentation.MainActivity
 
 @Component(
     modules = [
@@ -15,6 +16,7 @@ import dagger.Component
 )
 interface AppComponent {
 
+    fun inject(activity: MainActivity)
 
     @Component.Factory
     interface Factory{

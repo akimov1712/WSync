@@ -3,5 +3,5 @@ plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.parcelize) apply false
+    alias(libs.plugins.serialization) apply false
 }

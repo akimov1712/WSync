@@ -10,3 +10,5 @@ class App: Application() {
     }
 
 }
+
+fun Application.getComponent() = (this as App).component
