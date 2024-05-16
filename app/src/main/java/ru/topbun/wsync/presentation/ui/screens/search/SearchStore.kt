@@ -3,8 +3,9 @@ package ru.topbun.wsync.presentation.ui.screens.search
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import ru.topbun.wsync.domain.entity.City
 import ru.topbun.wsync.domain.useCases.ChangeFavoriteCityUseCase
@@ -77,6 +78,9 @@ internal class SearchStoreFactory @Inject constructor(
     }
 
     private inner class ExecutorImpl(val openReason: OpenReason) : CoroutineExecutor<Intent, Nothing, State, Msg, Label>() {
+
+        private var searchJob: Job? = null
+
         override fun executeIntent(intent: Intent) {
             when(intent){
                 is Intent.ChangeSearchQuery -> dispatch(Msg.ChangeSearchQuery(intent.query))
@@ -93,7 +97,8 @@ internal class SearchStoreFactory @Inject constructor(
                     }
                 }
                 Intent.ClickSearch -> {
-                    scope.launch {
+                    searchJob?.cancel()
+                    searchJob = scope.launch {
                         dispatch(Msg.LoadingSearchResult)
                         try {
                             val result = searchCityUseCase(state().searchQuery)
