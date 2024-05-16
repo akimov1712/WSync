@@ -10,7 +10,7 @@ import dagger.Component
         LocalModule::class,
         RepositoryModule::class,
         UseCaseModule::class,
-        StoreFactory::class
+        StoreFactoryModule::class
     ]
 )
 interface AppComponent {
