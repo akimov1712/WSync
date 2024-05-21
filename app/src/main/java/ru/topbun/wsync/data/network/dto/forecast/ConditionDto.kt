@@ -1,8 +1,8 @@
-package ru.topbun.wsync.data.network.dto
+package ru.topbun.wsync.data.network.dto.forecast
 
 import com.google.gson.annotations.SerializedName
 
 data class ConditionDto(
     @SerializedName("text") val text: String,
-    @SerializedName("icon") val iconUrl: String
+    @SerializedName("code") val code: Int
 )

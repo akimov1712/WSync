@@ -6,27 +6,22 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
-import ru.topbun.wsync.domain.entity.City
 import ru.topbun.wsync.domain.entity.Forecast
-import ru.topbun.wsync.domain.useCases.ChangeFavoriteCityUseCase
-import ru.topbun.wsync.domain.useCases.GetForecastUseCase
-import ru.topbun.wsync.domain.useCases.ObserveFavoriteCityUseCase
+import ru.topbun.wsync.domain.useCases.GetForecastCityIdUseCase
+import ru.topbun.wsync.domain.useCases.GetForecastLocationUseCase
 import ru.topbun.wsync.presentation.ui.screens.details.DetailsStore.Intent
 import ru.topbun.wsync.presentation.ui.screens.details.DetailsStore.Label
 import ru.topbun.wsync.presentation.ui.screens.details.DetailsStore.State
-import ru.topbun.wsync.presentation.ui.screens.search.SearchStore
 import javax.inject.Inject
 
 interface DetailsStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
-        data object ClickToChangeFavorite: Intent
-        data object ClickToBack: Intent
+        data object ClickToSearch: Intent
     }
 
     data class State(
-        val city: City,
-        val isFavorite: Boolean,
+        val openReasonDetailsScreen: OpenReasonDetails,
         val forecastState: ForecastState
     ){
         sealed interface ForecastState{
@@ -40,64 +35,71 @@ interface DetailsStore : Store<Intent, State, Label> {
     }
 
     sealed interface Label {
-        data object ClickToBack: Label
+        data object ClickToSearch: Label
     }
 }
 
 class DetailsStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val getForecastUseCase: GetForecastUseCase,
-    private val changeFavoriteCityUseCase: ChangeFavoriteCityUseCase,
-    private val observeFavoriteCityUseCase: ObserveFavoriteCityUseCase
+    private val getForecastCityIdUseCase: GetForecastCityIdUseCase,
+    private val getForecastLocationUseCase: GetForecastLocationUseCase
 ) {
 
-    fun create(city: City): DetailsStore =
+    fun create(openReasonDetailsScreen: OpenReasonDetails): DetailsStore =
         object : DetailsStore, Store<Intent, State, Label> by storeFactory.create(
             name = "DetailsStore",
             initialState = State(
-                city = city,
-                isFavorite = false,
+                openReasonDetailsScreen = openReasonDetailsScreen,
                 forecastState = State.ForecastState.Initial
             ),
-            bootstrapper = BootstrapperImpl(city),
+            bootstrapper = BootstrapperImpl(openReasonDetailsScreen),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 
     private sealed interface Action {
-        data class FavoriteStatusChanged(val status: Boolean): Action
         data class ForecastLoaded(val forecast: Forecast): Action
         data object ForecastStartLoading: Action
         data object ForecastErrorLoading: Action
     }
 
     private sealed interface Msg {
-        data class FavoriteStatusChanged(val status: Boolean): Msg
         data class ForecastLoaded(val forecast: Forecast): Msg
         data object ForecastStartLoading: Msg
         data object ForecastErrorLoading: Msg
     }
 
-    private inner class BootstrapperImpl(private val city: City) : CoroutineBootstrapper<Action>() {
+    private inner class BootstrapperImpl(private val openReasonDetailsScreen: OpenReasonDetails) : CoroutineBootstrapper<Action>() {
         override fun invoke() {
-            scope.launch {
-                loadForecast()
+            when(val reason = openReasonDetailsScreen){
+                OpenReasonDetails.Empty -> {
+                    scope.launch {
+                        loadForecast()
+                    }
+                }
+                is OpenReasonDetails.UsedCityId -> {
+                    scope.launch {
+                        loadForecast(reason.cityId)
+                    }
+                }
             }
-            scope.launch {
-                observeFavoriteStatus()
-            }
-        }
 
-        private suspend fun observeFavoriteStatus(){
-            observeFavoriteCityUseCase(city.id).collect{
-                dispatch(Action.FavoriteStatusChanged(it))
-            }
         }
 
         private suspend fun loadForecast(){
             dispatch(Action.ForecastStartLoading)
             try {
-                val forecast = getForecastUseCase(city.id)
+                val forecast = getForecastLocationUseCase()
+                dispatch(Action.ForecastLoaded(forecast))
+            } catch (e: Exception){
+                dispatch(Action.ForecastErrorLoading)
+            }
+        }
+
+        private suspend fun loadForecast(cityId: Int){
+            dispatch(Action.ForecastStartLoading)
+            try {
+                val forecast = getForecastCityIdUseCase(cityId)
                 dispatch(Action.ForecastLoaded(forecast))
             } catch (e: Exception){
                 dispatch(Action.ForecastErrorLoading)
@@ -108,24 +110,12 @@ class DetailsStoreFactory @Inject constructor(
     private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
         override fun executeIntent(intent: Intent) {
             when(intent){
-                Intent.ClickToBack -> publish(Label.ClickToBack)
-                Intent.ClickToChangeFavorite -> {
-                    val state = state()
-                    val isFavorite = state.isFavorite
-                    scope.launch {
-                        if (isFavorite){
-                            changeFavoriteCityUseCase.removeFromFavorite(state.city.id)
-                        } else {
-                            changeFavoriteCityUseCase.addToFavorite(state.city)
-                        }
-                    }
-                }
+                Intent.ClickToSearch -> publish(Label.ClickToSearch)
             }
         }
 
         override fun executeAction(action: Action) {
             when(action){
-                is Action.FavoriteStatusChanged -> dispatch(Msg.FavoriteStatusChanged(action.status))
                 Action.ForecastErrorLoading -> dispatch(Msg.ForecastErrorLoading)
                 is Action.ForecastLoaded -> dispatch(Msg.ForecastLoaded(action.forecast))
                 Action.ForecastStartLoading -> dispatch(Msg.ForecastStartLoading)
@@ -135,11 +125,6 @@ class DetailsStoreFactory @Inject constructor(
 
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(message: Msg): State = when(message){
-            is Msg.FavoriteStatusChanged -> {
-                copy(
-                    isFavorite = message.status
-                )
-            }
             Msg.ForecastErrorLoading -> {
                 copy(
                     forecastState = State.ForecastState.Error

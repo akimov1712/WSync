@@ -1,19 +1,11 @@
 package ru.topbun.wsync.data.mappers
 
-import ru.topbun.wsync.data.network.dto.WeatherCurrentDto
-import ru.topbun.wsync.data.network.dto.WeatherDto
-import ru.topbun.wsync.domain.entity.Weather
-import ru.topbun.wsync.utils.toCalendar
-import java.util.Calendar
-import java.util.Date
+import ru.topbun.wsync.data.network.dto.currentWeather.CurrentWeatherDto
+import ru.topbun.wsync.data.network.dto.currentWeather.CurrentWeatherResponse
+import ru.topbun.wsync.domain.entity.CurrentWeather
+import ru.topbun.wsync.utils.getIconForWeather
 
-fun WeatherCurrentDto.toEntity() = current.toEntity()
-
-fun WeatherDto.toEntity() = Weather(
-    tempC = tempC,
-    conditionText = conditionDto.text,
-    conditionUrl = conditionDto.iconUrl.toIconUrl(),
-    date = date.toCalendar()
+fun CurrentWeatherResponse.toEntity() = CurrentWeather(
+    iconRes = getIconForWeather(code = this.current.conditionDto.code, isDay = this.current.isDay),
+    tempC = this.current.tempC
 )
-
-private fun String.toIconUrl() = "https:$this".replace("64x64", "128x128")

@@ -8,7 +8,7 @@ import dagger.Provides
 @Module
 class StoreFactoryModule {
 
-    @Provides
+    @[Provides ApplicationScope]
     fun provideStoreFactory(): StoreFactory = DefaultStoreFactory()
 
 }

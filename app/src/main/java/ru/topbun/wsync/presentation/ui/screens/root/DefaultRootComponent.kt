@@ -11,16 +11,13 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.serialization.Serializable
-import ru.topbun.wsync.domain.entity.City
 import ru.topbun.wsync.presentation.ui.screens.details.DefaultDetailsComponent
-import ru.topbun.wsync.presentation.ui.screens.favorite.DefaultFavoriteComponent
-import ru.topbun.wsync.presentation.ui.screens.search.DefaultSearchComponent
-import ru.topbun.wsync.presentation.ui.screens.search.OpenReason
+import ru.topbun.wsync.presentation.ui.screens.details.OpenReasonDetails
+import ru.topbun.wsync.presentation.ui.screens.splash.DefaultSplashComponent
 
 class DefaultRootComponent @AssistedInject constructor(
     private val detailsComponentFactory: DefaultDetailsComponent.Factory,
-    private val searchComponentFactory: DefaultSearchComponent.Factory,
-    private val favoriteComponentFactory: DefaultFavoriteComponent.Factory,
+    private val splashComponentFactory: DefaultSplashComponent.Factory,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext{
 
@@ -29,7 +26,7 @@ class DefaultRootComponent @AssistedInject constructor(
     override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
         serializer = Config.serializer(),
-        initialConfiguration = Config.Favorite,
+        initialConfiguration = Config.Splash,
         handleBackButton = true,
         childFactory = ::child,
     )
@@ -41,59 +38,34 @@ class DefaultRootComponent @AssistedInject constructor(
         return when(config){
             is Config.Details -> {
                 val component = detailsComponentFactory.create(
-                    city = config.city,
-                    onClickToBack = {
-                        navigation.pop()
-                    },
+                    openReasonDetailsScreen = config.reason,
+                    onClickToSearch = {},
                     componentContext = componentContext
                 )
                 RootComponent.Child.Details(component)
             }
-            Config.Favorite -> {
-                val component = favoriteComponentFactory.create(
-                    onClickToCity = {
-                        navigation.push(Config.Details(it))
-                    },
-                    onClickToFavorite = {
-                        navigation.push(Config.Search(OpenReason.AddToFavorite))
-                    },
-                    onClickToSearch = {
-                        navigation.push(Config.Search(OpenReason.RegularSearch))
+
+            is Config.Splash -> {
+                val component = splashComponentFactory.create(
+                    onPermissionCheckCompleted = {
+                        navigation.push(Config.Details(
+                            OpenReasonDetails.Empty
+                        ))
                     },
                     componentContext = componentContext
                 )
-                RootComponent.Child.Favorite(component)
-            }
-            is Config.Search -> {
-                val component = searchComponentFactory.create(
-                    openReason = config.openReason,
-                    onClickToBack = {
-                        navigation.pop()
-                    },
-                    onSavedCity = {
-                        navigation.pop()
-                    },
-                    onOpenForecast = {
-                        navigation.push(Config.Details(it))
-                    },
-                    componentContext = componentContext
-                )
-                RootComponent.Child.Search(component)
+                RootComponent.Child.Splash(component)
             }
         }
     }
 
     @Serializable
     sealed interface Config{
+        @Serializable
+        data class Details(val reason: OpenReasonDetails): Config
 
         @Serializable
-        data object Favorite: Config
-
-        @Serializable
-        data class Details(val city: City): Config
-
-        @Serializable
-        data class Search(val openReason: OpenReason): Config
+        data object Splash: Config
 
     }
 

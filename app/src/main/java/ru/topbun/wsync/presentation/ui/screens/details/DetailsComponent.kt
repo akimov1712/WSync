@@ -6,7 +6,6 @@ interface DetailsComponent {
 
     val model: StateFlow<DetailsStore.State>
 
-    fun onClickChangeFavorite()
-    fun onClickBack()
+    fun onClickSearch()
 
 }

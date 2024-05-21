@@ -9,7 +9,9 @@ import ru.topbun.wsync.BuildConfig
 object ApiFactory {
 
     private const val BASE_URL = "https://api.weatherapi.com/v1/"
-    private const val KEY_PARAM = "key"
+    private const val KEY_KEYAPI = "key"
+    private const val KEY_LANG = "lang"
+    private const val PARAM_LANG = "ru"
 
     private val client = OkHttpClient.Builder()
         .addInterceptor (
@@ -22,7 +24,8 @@ object ApiFactory {
             val newUrl = originalRequest
                 .url
                 .newBuilder()
-                .addQueryParameter(KEY_PARAM,BuildConfig.WEATHER_API_KEY)
+                .addQueryParameter(KEY_LANG,PARAM_LANG)
+                .addQueryParameter(KEY_KEYAPI,BuildConfig.WEATHER_API_KEY)
                 .build()
             val newRequest = originalRequest
                 .newBuilder()

@@ -1,4 +1,4 @@
-package ru.topbun.wsync.data.network.dto
+package ru.topbun.wsync.data.network.dto.city
 
 import com.google.gson.annotations.SerializedName
 

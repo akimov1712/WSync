@@ -2,7 +2,7 @@ package ru.topbun.wsync.domain.useCases
 
 import ru.topbun.wsync.domain.repository.WeatherRepository
 
-class GetForecastUseCase(
+class GetForecastCityIdUseCase(
     private val repository: WeatherRepository
 ) {
 

@@ -1,4 +1,4 @@
-package ru.topbun.wsync.domain.repository
+package ru.topbun.wsync.di
 
 import dagger.Module
 import dagger.Provides
