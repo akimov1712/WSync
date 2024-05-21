@@ -20,29 +20,15 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var rootComponentFactory: DefaultRootComponent.Factory
-    @Inject
-    lateinit var repository: WeatherRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         application.getComponent().inject(this)
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            repository.getForecast()
-        }
         setContent {
             RootContent(
-                rootComponentFactory.create(defaultComponentContext())
+                component = rootComponentFactory.create(defaultComponentContext())
             )
         }
-    }
-
-
-    fun requestPermissionLocation(){
-        val contract = ActivityResultContracts.RequestPermission()
-        val launcher = registerForActivityResult(contract) {
-
-        }
-        launcher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 
 }

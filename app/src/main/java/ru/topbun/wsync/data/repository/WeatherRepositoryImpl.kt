@@ -11,6 +11,7 @@ import ru.topbun.wsync.data.network.api.WeatherApiService
 import ru.topbun.wsync.domain.entity.CurrentWeather
 import ru.topbun.wsync.domain.entity.Forecast
 import ru.topbun.wsync.domain.repository.WeatherRepository
+import ru.topbun.wsync.utils.PermissionCheckedGranted
 import java.util.Locale
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class WeatherRepositoryImpl @Inject constructor(
 
 
     override suspend fun getForecast(): Forecast{
-        return if (isLocationPermissionGranted()) {
+        return if (PermissionCheckedGranted.isLocation(context)) {
             getForecastFromApi()
         } else {
             apiService.loadForecast("Москва").toEntity()
@@ -45,14 +46,6 @@ class WeatherRepositoryImpl @Inject constructor(
             "$lat,$lon"
         ).toEntity()
     }
-
-    private fun isLocationPermissionGranted() = !(ActivityCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    ) != PackageManager.PERMISSION_GRANTED)
 
     private companion object{
         private const val PREFIX_CITY_ID = "id:"

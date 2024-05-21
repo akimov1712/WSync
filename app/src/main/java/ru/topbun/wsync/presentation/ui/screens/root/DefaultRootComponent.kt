@@ -1,11 +1,13 @@
 package ru.topbun.wsync.presentation.ui.screens.root
 
+import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -48,7 +50,7 @@ class DefaultRootComponent @AssistedInject constructor(
             is Config.Splash -> {
                 val component = splashComponentFactory.create(
                     onPermissionCheckCompleted = {
-                        navigation.push(Config.Details(
+                        navigation.replaceCurrent(Config.Details(
                             OpenReasonDetails.Empty
                         ))
                     },
