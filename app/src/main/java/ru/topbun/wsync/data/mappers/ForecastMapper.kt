@@ -44,7 +44,7 @@ private fun WeatherDto.toEntity() = Weather(
 private fun List<HourDto>.toEntityList() = map {
     HourWeather(
         time = it.time.toCalendar(),
-        iconCode = getIconForWeather(it.condition.code, it.isDay),
+        iconRes = getIconForWeather(it.condition.code, it.isDay),
         tempC = it.tempC
     )
 }

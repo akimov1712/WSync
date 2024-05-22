@@ -4,6 +4,6 @@ import java.util.Calendar
 
 data class HourWeather(
     val time: Calendar,
-    val iconCode: Int,
+    val iconRes: Int,
     val tempC: Float
 )
