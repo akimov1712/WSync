@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.defaultComponentContext
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         application.getComponent().inject(this)
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             RootContent(
                 component = rootComponentFactory.create(defaultComponentContext())

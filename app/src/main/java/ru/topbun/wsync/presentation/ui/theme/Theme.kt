@@ -39,7 +39,7 @@ fun WSyncTheme(
     val window = (view.context as Activity).window
     if (!view.isInEditMode) {
         SideEffect {
-            window.statusBarColor = Primary.toArgb()
+            window.statusBarColor = Color.Transparent.toArgb()
         }
     }
 

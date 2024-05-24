@@ -16,7 +16,7 @@ private val gradientWeathers = mapOf(
     R.drawable.image_very_clouds to createGradient(Color(79,133,188), Color(35,94,155)),
 )
 
-fun createGradient(
+private fun createGradient(
     firstColor: Color,
     secondColor: Color,
 ) = Brush.verticalGradient(listOf(firstColor,secondColor))

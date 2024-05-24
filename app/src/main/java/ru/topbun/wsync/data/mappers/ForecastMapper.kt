@@ -9,14 +9,16 @@ import ru.topbun.wsync.domain.entity.Forecast
 import ru.topbun.wsync.domain.entity.HourWeather
 import ru.topbun.wsync.domain.entity.Weather
 import ru.topbun.wsync.utils.getIconForWeather
-import ru.topbun.wsync.utils.toCalendar
+import ru.topbun.wsync.utils.toDate
 import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun ForecastResponse.toEntity() = Forecast(
     currentWeather = current.toEntity(),
     thisDayWeather = forecast.forecastDay.first().toEntity(),
     upcoming = forecast.forecastDay.drop(1).map { it.toEntity() },
-    date = current.dateLong.toCalendar(),
+    date = current.dateLong.toDate(),
     city = location.name
 )
 
@@ -31,26 +33,25 @@ private fun CurrentDto.toEntity() = CurrentWeatherForecast(
 )
 
 private fun WeatherDto.toEntity() = Weather(
-    date = date.toCalendar(),
+    date = date.toDate(),
     conditionText = day.condition.text,
     iconRes = getIconForWeather(day.condition.code, 1),
     maxTempC = day.maxTempC,
     minTempC = day.minTempC,
-    sunset = astro.sunset.convertAmericanDateToLong().toCalendar(),
-    sunrise = astro.sunrise.convertAmericanDateToLong().toCalendar(),
+    sunset = astro.sunset.convertAmericanDate(),
+    sunrise = astro.sunrise.convertAmericanDate(),
     hourlyForecast = hours.toEntityList()
 )
 
 private fun List<HourDto>.toEntityList() = map {
     HourWeather(
-        time = it.time.toCalendar(),
+        time = it.time.toDate(),
         iconRes = getIconForWeather(it.condition.code, it.isDay),
         tempC = it.tempC
     )
 }
 
-private fun String.convertAmericanDateToLong(): Long{
-    val inputFormat = SimpleDateFormat("hh:mm a")
-    val date = inputFormat.parse(this)
-    return date.time
+private fun String.convertAmericanDate(): Date {
+    val format = SimpleDateFormat("hh:mm a")
+    return format.parse(this)
 }
