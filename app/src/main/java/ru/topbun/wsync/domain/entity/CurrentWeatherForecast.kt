@@ -6,8 +6,8 @@ data class CurrentWeatherForecast(
     val tempC: Float,
     val conditionText: String,
     val iconRes: Int,
-    val windSpeed: Float,
-    val pressure: Float,
+    val windSpeed: Double,
+    val pressure: Int,
     val precipMm: Float,
     val humidityPercent: Int,
 )

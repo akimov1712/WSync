@@ -1,5 +1,6 @@
 package ru.topbun.wsync.presentation.ui.screens.details
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -93,6 +94,7 @@ class DetailsStoreFactory @Inject constructor(
                 dispatch(Action.ForecastLoaded(forecast))
             } catch (e: Exception){
                 dispatch(Action.ForecastErrorLoading)
+                Log.d("TTT", e.message.toString())
             }
         }
 
@@ -116,7 +118,9 @@ class DetailsStoreFactory @Inject constructor(
 
         override fun executeAction(action: Action) {
             when(action){
-                Action.ForecastErrorLoading -> dispatch(Msg.ForecastErrorLoading)
+                Action.ForecastErrorLoading -> {
+                    dispatch(Msg.ForecastErrorLoading)
+                }
                 is Action.ForecastLoaded -> dispatch(Msg.ForecastLoaded(action.forecast))
                 Action.ForecastStartLoading -> dispatch(Msg.ForecastStartLoading)
             }

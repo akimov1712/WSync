@@ -30,8 +30,8 @@ import ru.topbun.wsync.R
 import ru.topbun.wsync.domain.entity.Forecast
 import ru.topbun.wsync.domain.entity.HourWeather
 import ru.topbun.wsync.utils.createFont
-import ru.topbun.wsync.utils.getGradientWithIcon
-import ru.topbun.wsync.utils.toDateString
+import ru.topbun.wsync.utils.getGradientVerticalWithIcon
+import ru.topbun.wsync.utils.toShortString
 import ru.topbun.wsync.utils.toTime
 import java.util.Date
 
@@ -40,11 +40,11 @@ fun CurrentInformationWeather(forecast: Forecast) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(getGradientWithIcon(forecast.currentWeather.iconRes))
+            .background(getGradientVerticalWithIcon(forecast.currentWeather.iconRes))
     ) {
         Spacer(Modifier.height(48.dp))
         Header(forecast.date)
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(20.dp))
         CityName(forecast.city)
         Spacer(Modifier.height(24.dp))
         BasicInformation(
@@ -191,7 +191,7 @@ private fun BasicInformation(
             modifier = Modifier
                 .padding(end = 24.dp)
                 .size(130.dp)
-                .align(Alignment.TopEnd),
+                .align(Alignment.CenterEnd),
             painter = painterResource(iconRes),
             contentDescription = "Иконка погоды"
         )
@@ -218,7 +218,7 @@ private fun Header(date: Date) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
             modifier = Modifier.weight(1f),
-            text = date.toDateString(),
+            text = date.toShortString(),
             color = Color.White,
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
@@ -227,14 +227,15 @@ private fun Header(date: Date) {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 24.dp),
+                .padding(end = 20.dp),
             contentAlignment = Alignment.CenterEnd
         ) {
             IconButton(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.padding(4.dp),
                 onClick = {}
             ) {
                 Icon(
+                    modifier = Modifier.size(24.dp),
                     painter = painterResource(R.drawable.ic_search),
                     contentDescription = "Кнопка поиска",
                     tint = Color.White

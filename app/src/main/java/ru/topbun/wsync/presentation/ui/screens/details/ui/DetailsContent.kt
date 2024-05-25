@@ -45,7 +45,9 @@ import ru.topbun.wsync.utils.toTime
 fun DetailsContent(component: DetailsComponent) {
     val stateScreen by component.model.collectAsState()
     when(val state = stateScreen.forecastState){
-        DetailsStore.State.ForecastState.Error -> {}
+        DetailsStore.State.ForecastState.Error -> {
+            Text(text = "Ошибка")
+        }
         DetailsStore.State.ForecastState.Initial -> {}
         DetailsStore.State.ForecastState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(),
@@ -67,107 +69,5 @@ private fun DetailContentSuccess(forecast: Forecast) {
     ) {
         CurrentInformationWeather(forecast)
         OtherInformationWeather(forecast)
-    }
-}
-
-@Composable
-private fun OtherInformationWeather(forecast: Forecast) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .heightIn(max = 1000.dp),
-        contentPadding = PaddingValues(top = 24.dp),
-
-    ) {
-        item{
-            val sunrise = forecast.thisDayWeather.sunrise
-            ItemInfo(
-                titleText = "Рассвет",
-                iconRes = R.drawable.ic_sunrise,
-                iconText = sunrise.toTime()
-            )
-        }
-        item{
-            val sunset = forecast.thisDayWeather.sunset
-            ItemInfo(
-                titleText = "Закат",
-                iconRes = R.drawable.ic_sunset,
-                iconText = sunset.toTime()
-            )
-        }
-        item{
-            val wind = forecast.currentWeather.windSpeed
-            ItemInfo(
-                titleText = "Ветер",
-                iconRes = R.drawable.ic_wind,
-                iconText = "$wind м/c"
-            )
-        }
-        item{
-            val pressure = forecast.currentWeather.pressure
-            ItemInfo(
-                titleText = "Давление",
-                iconRes = R.drawable.ic_pressure,
-                iconText = "${pressure.toInt()} мрс"
-            )
-        }
-        item{
-            val precip = forecast.currentWeather.precipMm
-            ItemInfo(
-                titleText = "Осадки",
-                iconRes = R.drawable.ic_precip,
-                iconText = "${precip.toInt()} мм"
-            )
-        }
-        item{
-            val humidity = forecast.currentWeather.humidityPercent
-            ItemInfo(
-                titleText = "Влажность",
-                iconRes = R.drawable.ic_humidity,
-                iconText = "$humidity %"
-            )
-        }
-    }
-}
-
-
-@Composable
-private fun ItemInfo(
-    titleText: String,
-    iconRes: Int,
-    iconText: String
-) {
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = titleText,
-            color = Color.Black,
-            fontFamily = createFont(R.font.nunito_bold),
-            fontSize = 20.sp
-        )
-        Spacer(modifier = Modifier.height(6.dp))
-        IconWithText(iconRes, iconText)
-        Spacer(modifier = Modifier.height(24.dp))
-    }
-}
-
-@Composable
-private fun IconWithText(
-    iconRes: Int,
-    iconText: String
-){
-    Row {
-        Image(
-            painter = painterResource(iconRes),
-            contentDescription = null,
-        )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(
-            text = iconText,
-            color = Color.Black,
-            fontSize = 18.sp,
-            fontFamily = createFont(resId = R.font.nunito_medium)
-        )
     }
 }

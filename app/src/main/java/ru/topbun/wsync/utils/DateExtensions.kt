@@ -10,7 +10,19 @@ fun Date.toTime(): String {
     return format.format(this.time)
 }
 
-fun Date.toDateString(): String {
-    val format = SimpleDateFormat("MMM dd",Locale.ENGLISH)
+fun Date.toShortString(): String {
+    val format = SimpleDateFormat("MMM dd")
     return format.format(this.time)
+}
+
+fun Date.toLongString(): String{
+    val calendar = Calendar.getInstance().apply{time = this@toLongString}
+    val tomorrow = Calendar.getInstance()
+    tomorrow.add(Calendar.DAY_OF_YEAR, 1)
+    if (calendar.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) &&
+        calendar.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
+        return "Завтра"
+    }
+    val dateFormat = SimpleDateFormat("d MMMM", Locale("ru"))
+    return dateFormat.format(this)
 }

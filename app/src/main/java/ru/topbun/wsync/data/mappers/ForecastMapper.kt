@@ -26,8 +26,8 @@ private fun CurrentDto.toEntity() = CurrentWeatherForecast(
     tempC = tempC,
     conditionText = condition.text,
     iconRes = getIconForWeather(condition.code, isDay),
-    windSpeed = windSpeed,
-    pressure = windSpeed,
+    windSpeed = windSpeed.toMH(),
+    pressure = pressure,
     precipMm = precipMm,
     humidityPercent = humidityPercent
 )
@@ -55,3 +55,9 @@ private fun String.convertAmericanDate(): Date {
     val format = SimpleDateFormat("hh:mm a")
     return format.parse(this)
 }
+
+private fun Float.toMH() = String.format(
+    Locale.US,
+    "%.2f",
+    this
+).toDouble()
