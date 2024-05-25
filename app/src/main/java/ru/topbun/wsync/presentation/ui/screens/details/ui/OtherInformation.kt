@@ -92,10 +92,10 @@ private fun UpcomingItem(weather: Weather) {
                     fontSize = 20.sp
                 )
                 Text(
-                    text = weather.conditionText,
+                    text = weather.conditionText.formatConditionText(),
                     color = Color(255, 255, 255, 153),
                     fontFamily = createFont(R.font.nunito_bold),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -236,3 +236,5 @@ private fun IconWithText(
         )
     }
 }
+
+fun String.formatConditionText() = if (this.length >= 14) "${this.take(14)}..." else this

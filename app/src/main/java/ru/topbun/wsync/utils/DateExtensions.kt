@@ -11,7 +11,7 @@ fun Date.toTime(): String {
 }
 
 fun Date.toShortString(): String {
-    val format = SimpleDateFormat("MMM dd")
+    val format = SimpleDateFormat("dd MMM")
     return format.format(this.time)
 }
 
